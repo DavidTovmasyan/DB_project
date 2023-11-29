@@ -1,0 +1,1 @@
+Created the initialization script, but still have problems with creating the tables.
