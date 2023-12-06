@@ -1,1 +1,1 @@
-Created the initialization script, but still have problems with creating the tables.
+Used FastAPI main documentation to  make the 'skeleton', but still haven't added my own db in it.
