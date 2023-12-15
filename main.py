@@ -17,6 +17,24 @@ def get_db():
     finally:
         db.close()
 
+@app.on_event("startup")
+def startup_populate_db():
+    db = SessionLocal()
+    num_persons = db.query(models.Person).count()
+    if num_persons == 0:
+        persons = []
+        for i in range(1000):
+            temp_person = {'id':i+1, 'passport':'', 'foreign_passport':'',
+                           'country': '', 'contacts':'', 'name':f"person {i+1} name",
+                           'surname':f"person {i+1} surname", 'second_name':f"person {i+1} second_name"}
+            persons.append(temp_person)
+        for person in persons:
+            db.add(models.Person(**person))
+        db.commit()
+        db.close()
+    else:
+        print(f"{num_persons} person(s) already exist")
+
 # Endpoint to create a new vacation place
 @app.post("/vacation_places/", response_model=schemas.VacationPlace)
 def create_vacation_place(vacation_place: schemas.VacationPlaceCreate, db: Session = Depends(get_db)):

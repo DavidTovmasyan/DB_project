@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Date, Decimal, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, Date, Numeric, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 from .database import Base
 
@@ -32,8 +32,8 @@ class Tour(Base):
     __tablename__ = "tour"
 
     id = Column(Integer, primary_key=True, index=True)
-    price = Column(Decimal(10, 2))
-    discount = Column(Decimal(10, 2))
+    price = Column(Numeric(10, 2))
+    discount = Column(Numeric(10, 2))
     start_date = Column(Date)
     end_date = Column(Date)
     vacation_place_id = Column(Integer, ForeignKey("vacation_place.id"))
