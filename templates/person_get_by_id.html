@@ -1,0 +1,30 @@
+<!-- person_get_by_id.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Person Details</title>
+</head>
+<body>
+    <h1>Person Details</h1>
+    <p>Name: {{ person.name }}</p>
+    <p>Surname: {{ person.surname }}</p>
+    <!-- Add other details as needed -->
+
+    <h2>Update Person</h2>
+    <form method="post" action="/persons/update/{{ person.id }}">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" value="{{ person.name }}" required>
+        <br>
+        <label for="surname">Surname:</label>
+        <input type="text" id="surname" name="surname" value="{{ person.surname }}" required>
+        <br>
+        <!-- Add other fields as needed -->
+        <input type="submit" value="Update">
+    </form>
+
+    <h2>Delete Person</h2>
+    <form method="post" action="/persons/delete/{{ person.id }}">
+        <input type="submit" value="Delete">
+    </form>
+</body>
+</html>

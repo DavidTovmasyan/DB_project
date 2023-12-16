@@ -1,4 +1,6 @@
 from sqlalchemy.orm import Session
+from typing import Optional
+from sqlalchemy import func
 
 from . import models, schemas
 
@@ -85,6 +87,30 @@ def delete_tour(db: Session, tour_id: int):
     db.query(models.Tour).filter(models.Tour.id == tour_id).delete()
     db.commit()
 
+# For our queries
+    
+def get_persons(db: Session, skip: int = 0, limit: int = 100, **filters):
+    return db.query(models.Person).filter_by(**filters).offset(skip).limit(limit).all()
+
+def get_tours_with_places(db: Session):
+    return db.query(models.Tour).join(models.VacationPlace).all()
+
+def update_tour_price(db: Session, tour_id: int, new_price: float):
+    db_tour = db.query(models.Tour).filter(models.Tour.id == tour_id).first()
+    if db_tour:
+        db_tour.price = new_price
+        db.commit()
+        db.refresh(db_tour)
+    return db_tour
+
+def get_tours_count_per_place(db: Session):
+    return db.query(models.VacationPlace.country, func.count(models.Tour.id).label('tour_count')).join(models.Tour).group_by(models.VacationPlace.country).all()
+
+def get_persons(db: Session, skip: int = 0, limit: int = 100, sort_by: Optional[str] = None):
+    query = db.query(models.Person).offset(skip).limit(limit)
+    if sort_by:
+        query = query.order_by(getattr(models.Person, sort_by))
+    return query.all()
 
 '''
 Example code

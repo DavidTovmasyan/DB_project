@@ -1,0 +1,30 @@
+<!-- vacation_place_get_by_id.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vacation Place Details</title>
+</head>
+<body>
+    <h1>Vacation Place Details</h1>
+    <p>Country: {{ vacation_place.country }}</p>
+    <p>Place: {{ vacation_place.place }}</p>
+    <!-- Add other details as needed -->
+
+    <h2>Update Vacation Place</h2>
+    <form method="post" action="/vacation_places/update/{{ vacation_place.id }}">
+        <label for="country">Country:</label>
+        <input type="text" id="country" name="country" value="{{ vacation_place.country }}" required>
+        <br>
+        <label for="place">Place:</label>
+        <input type="text" id="place" name="place" value="{{ vacation_place.place }}" required>
+        <br>
+        <!-- Add other fields as needed -->
+        <input type="submit" value="Update">
+    </form>
+
+    <h2>Delete Vacation Place</h2>
+    <form method="post" action="/vacation_places/delete/{{ vacation_place.id }}">
+        <input type="submit" value="Delete">
+    </form>
+</body>
+</html>

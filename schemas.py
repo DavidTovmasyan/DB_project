@@ -18,6 +18,10 @@ class VacationPlace(VacationPlaceBase):
     class Config:
         orm_mode = True
 
+# Added for querry
+class GetVacationPlacesFilter(BaseModel):
+    country: Optional[str] = None
+
 class PersonBase(BaseModel):
     passport: str
     foreign_passport: Optional[str] = None
@@ -55,6 +59,24 @@ class Tour(TourBase):
     class Config:
         orm_mode = True
 
+
+# New query schemas
+class SelectQuery(BaseModel):
+    condition1: str
+    condition2: str
+
+class JoinQuery(BaseModel):
+    pass
+
+class UpdateQuery(BaseModel):
+    condition: str
+    update_field: str
+
+class GroupByQuery(BaseModel):
+    field: str
+
+class SortQuery(BaseModel):
+    field: str
 
 '''
 Example code

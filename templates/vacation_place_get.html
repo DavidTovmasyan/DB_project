@@ -1,0 +1,32 @@
+<!-- vacation_place_get.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vacation Places</title>
+</head>
+<body>
+    <h1>Vacation Places</h1>
+    <ul>
+        {% for vacation_place in vacation_places %}
+            <li>
+                <a href="/vacation_places/{{ vacation_place.id }}">{{ vacation_place.country }} - {{ vacation_place.place }}</a>
+                <form method="post" action="/vacation_places/delete/{{ vacation_place.id }}">
+                    <input type="submit" value="Delete">
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Create New Vacation Place</h2>
+    <form method="post" action="/vacation_places/create">
+        <label for="country">Country:</label>
+        <input type="text" id="country" name="country" required>
+        <br>
+        <label for="place">Place:</label>
+        <input type="text" id="place" name="place" required>
+        <br>
+        <!-- Add other fields as needed -->
+        <input type="submit" value="Create">
+    </form>
+</body>
+</html>

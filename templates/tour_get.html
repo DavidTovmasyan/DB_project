@@ -1,0 +1,32 @@
+<!-- tour_get.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tours</title>
+</head>
+<body>
+    <h1>Tours</h1>
+    <ul>
+        {% for tour in tours %}
+            <li>
+                <a href="/tours/{{ tour.id }}">{{ tour.price }} - {{ tour.start_date }}</a>
+                <form method="post" action="/tours/delete/{{ tour.id }}">
+                    <input type="submit" value="Delete">
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Create New Tour</h2>
+    <form method="post" action="/tours/create">
+        <label for="price">Price:</label>
+        <input type="text" id="price" name="price" required>
+        <br>
+        <label for="start_date">Start Date:</label>
+        <input type="text" id="start_date" name="start_date" required>
+        <br>
+        <!-- Add other fields as needed -->
+        <input type="submit" value="Create">
+    </form>
+</body>
+</html>
