@@ -46,8 +46,16 @@ def create_person(db: Session, person: schemas.PersonCreate):
 def get_person(db: Session, person_id: int):
     return db.query(models.Person).filter(models.Person.id == person_id).first()
 
-def get_persons(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Person).offset(skip).limit(limit).all()
+'''def get_persons(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Person).offset(skip).limit(limit).all()'''
+
+def get_persons(db: Session, skip: int = 0, limit: int = 100, sort_by: str = None):
+    if sort_by == models.Person.id:
+        return db.query(models.Person).order_by(sort_by).offset(skip).limit(limit).all()
+    elif sort_by == models.Person.name:
+        return db.query(models.Person).order_by(sort_by).offset(skip).limit(limit).all()
+    else:
+        print("Wrong argument!")
 
 def update_person(db: Session, person_id: int, person: schemas.PersonCreate):
     db_person = db.query(models.Person).filter(models.Person.id == person_id).first()
@@ -89,7 +97,7 @@ def delete_tour(db: Session, tour_id: int):
 
 # For our queries
     
-def get_persons(db: Session, skip: int = 0, limit: int = 100, **filters):
+def get_persons_filtered(db: Session, skip: int = 0, limit: int = 100, **filters):
     return db.query(models.Person).filter_by(**filters).offset(skip).limit(limit).all()
 
 def get_tours_with_places(db: Session):
@@ -106,49 +114,4 @@ def update_tour_price(db: Session, tour_id: int, new_price: float):
 def get_tours_count_per_place(db: Session):
     return db.query(models.VacationPlace.country, func.count(models.Tour.id).label('tour_count')).join(models.Tour).group_by(models.VacationPlace.country).all()
 
-def get_persons(db: Session, skip: int = 0, limit: int = 100, sort_by: Optional[str] = None):
-    query = db.query(models.Person).offset(skip).limit(limit)
-    if sort_by:
-        query = query.order_by(getattr(models.Person, sort_by))
-    return query.all()
-
-'''
-Example code
-from sqlalchemy.orm import Session
-
-from . import models, schemas
-
-
-def get_user(db: Session, user_id: int):
-    return db.query(models.User).filter(models.User.id == user_id).first()
-
-
-def get_user_by_email(db: Session, email: str):
-    return db.query(models.User).filter(models.User.email == email).first()
-
-
-def get_users(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.User).offset(skip).limit(limit).all()
-
-
-def create_user(db: Session, user: schemas.UserCreate):
-    fake_hashed_password = user.password + "notreallyhashed"
-    db_user = models.User(email=user.email, hashed_password=fake_hashed_password)
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
-
-
-def get_items(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Item).offset(skip).limit(limit).all()
-
-
-def create_user_item(db: Session, item: schemas.ItemCreate, user_id: int):
-    db_item = models.Item(**item.dict(), owner_id=user_id)
-    db.add(db_item)
-    db.commit()
-    db.refresh(db_item)
-    return db_item
-
-'''
+# For sorting, I have modified the already existing function

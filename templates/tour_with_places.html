@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tours with Vacation Places</title>
+</head>
+<body>
+
+    <h1>Tours with Vacation Places</h1>
+
+    {% if tours %}
+        <ul>
+            {% for tour in tours %}
+                <li>
+                    <strong>Tour ID:</strong> {{ tour.id }}<br>
+                    <strong>Price:</strong> {{ tour.price }}<br>
+                    <strong>Discount:</strong> {{ tour.discount }}<br>
+                    <strong>Start Date:</strong> {{ tour.start_date }}<br>
+                    <strong>End Date:</strong> {{ tour.end_date }}<br>
+                    <strong>Vacation Place:</strong> {{ tour.vacation_place.place }} in {{ tour.vacation_place.country }}<br>
+                    <strong>Hotel:</strong> {{ tour.vacation_place.hotel }}<br>
+                    <strong>Specialty:</strong> {{ tour.vacation_place.main_speciality }}<br>
+                    <strong>Sea:</strong> {{ tour.vacation_place.sea }}<br>
+                    <strong>Person:</strong> {{ tour.person.name }} {{ tour.person.surname }}<br>
+                    <strong>Passport:</strong> {{ tour.person.passport }}<br>
+                    <strong>Country:</strong> {{ tour.person.country }}<br>
+                    <strong>Contacts:</strong> {{ tour.person.contacts }}<br>
+                </li>
+                <br>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No tours with vacation places found.</p>
+    {% endif %}
+
+</body>
+</html>

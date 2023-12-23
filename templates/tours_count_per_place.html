@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tours Count per Vacation Place</title>
+</head>
+<body>
+
+    <h1>Tours Count per Vacation Place</h1>
+
+    {% if tour_count_per_place %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Vacation Place</th>
+                    <th>Tour Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in tour_count_per_place %}
+                    <tr>
+                        <td>{{ item.country }}</td>
+                        <td>{{ item.tour_count }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No data available for tours count per vacation place.</p>
+    {% endif %}
+
+</body>
+</html>

@@ -6,9 +6,12 @@
 </head>
 <body>
     <h1>Vacation Place Details</h1>
+    <p>ID: {{ vacation_place.id }}</p>
     <p>Country: {{ vacation_place.country }}</p>
     <p>Place: {{ vacation_place.place }}</p>
-    <!-- Add other details as needed -->
+    <p>Hotel: {{ vacation_place.hotel }}</p>
+    <p>Main speciality: {{ vacation_place.main_speciality }}</p>
+    <p>Sea: {{ vacation_place.sea }}</p>
 
     <h2>Update Vacation Place</h2>
     <form method="post" action="/vacation_places/update/{{ vacation_place.id }}">

@@ -28,7 +28,8 @@ def index(request: Request):
     context = {'request' : request}
     return templates.TemplateResponse("index.html", context)
 
-# 
+# On start fills the 'person' if not filled yet
+# For 3rd step
 
 @app.on_event("startup")
 def startup_populate_db():
@@ -81,7 +82,7 @@ def create_person(person: schemas.PersonCreate, db: Session = Depends(get_db)):
 
 @app.get("/persons/", response_model=list[schemas.Person], response_class=HTMLResponse)
 def read_persons(request: Request, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    persons = crud.get_persons(db, skip=skip, limit=limit)
+    persons = crud.get_persons(db, skip=skip, limit=limit, sort_by=models.Person.id)
     return templates.TemplateResponse("person_get.html", {"request": request, "persons": persons})
 
 
@@ -128,94 +129,37 @@ def delete_tour(tour_id: int, db: Session = Depends(get_db)):
 
 # Addinq querries
 
-# Assuming you want to filter persons by name and country
-@app.get("/persons/filter", response_model=list[schemas.Person], response_class=HTMLResponse)
-def filter_persons(request: Request, name: str = None, country: str = None, db: Session = Depends(get_db)):
+# 1) Assuming you want to filter persons by name and country (SELECT ... WHERE)
+@app.get("/persons/filter/{person_name}&&{person_country}", response_model=list[schemas.PersonBase], response_class=HTMLResponse)
+def filter_persons(request: Request, name: str = None, country: str = None, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     filters = {}
     if name:
         filters["name"] = name
     if country:
         filters["country"] = country
 
-    persons = crud.get_persons(db, **filters)
+    persons = crud.get_persons_filtered(db, skip=skip, limit=limit, **filters)
     return templates.TemplateResponse("person_get.html", {"request": request, "persons": persons})
 
-# Assuming you want to get tours with corresponding vacation places
+# 2) Assuming you want to get tours with corresponding vacation places (JOIN)
 @app.get("/tours-with-places", response_model=list[schemas.Tour], response_class=HTMLResponse)
 def get_tours_with_places(request: Request, db: Session = Depends(get_db)):
     tours = crud.get_tours_with_places(db)
     return templates.TemplateResponse("tour_with_places.html", {"request": request, "tours": tours})
 
-# Assuming you want to update the price of a tour based on the tour_id
-@app.put("/tours/update-price/{tour_id}", response_model=schemas.Tour)
+# 3) Assuming you want to update the price of a tour based on the tour_id (UPDATE with some condition)
+@app.put("/tours/update_price/{tour_id}", response_model=schemas.Tour)
 def update_tour_price(tour_id: int, new_price: float, db: Session = Depends(get_db)):
     return crud.update_tour_price(db=db, tour_id=tour_id, new_price=new_price)
 
-# Assuming you want to get the count of tours per vacation place
-@app.get("/tours-count-per-place", response_model=dict, response_class=HTMLResponse)
+# 4) Assuming you want to get the count of tours per vacation place
+@app.get("/tours_count_per_place", response_model=dict, response_class=HTMLResponse)
 def get_tours_count_per_place(request: Request, db: Session = Depends(get_db)):
     tour_count_per_place = crud.get_tours_count_per_place(db)
     return templates.TemplateResponse("tours_count_per_place.html", {"request": request, "tour_count_per_place": tour_count_per_place})
 
-# Assuming you want to get persons with optional sorting by name
-@app.get("/persons/", response_model=list[schemas.Person], response_class=HTMLResponse)
-def read_persons(request: Request, skip: int = 0, limit: int = 100, sort_by: Optional[str] = None, db: Session = Depends(get_db)):
-    persons = crud.get_persons(db, skip=skip, limit=limit, sort_by=sort_by)
+# 5) Assuming you want to get persons with optional sorting by name
+@app.get("/persons_sort_by_name/", response_model=list[schemas.Person], response_class=HTMLResponse)
+def read_persons(request: Request, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    persons = crud.get_persons(db, skip=skip, limit=limit, sort_by=models.Person.name)
     return templates.TemplateResponse("person_get.html", {"request": request, "persons": persons})
-
-'''
-Example code
-from fastapi import Depends, FastAPI, HTTPException
-from sqlalchemy.orm import Session
-
-from . import crud, models, schemas
-from .database import SessionLocal, engine
-
-models.Base.metadata.create_all(bind=engine)
-
-app = FastAPI()
-
-
-# Dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-@app.post("/users/", response_model=schemas.User)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    db_user = crud.get_user_by_email(db, email=user.email)
-    if db_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    return crud.create_user(db=db, user=user)
-
-
-@app.get("/users/", response_model=list[schemas.User])
-def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    users = crud.get_users(db, skip=skip, limit=limit)
-    return users
-
-
-@app.get("/users/{user_id}", response_model=schemas.User)
-def read_user(user_id: int, db: Session = Depends(get_db)):
-    db_user = crud.get_user(db, user_id=user_id)
-    if db_user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return db_user
-
-
-@app.post("/users/{user_id}/items/", response_model=schemas.Item)
-def create_item_for_user(
-    user_id: int, item: schemas.ItemCreate, db: Session = Depends(get_db)
-):
-    return crud.create_user_item(db=db, item=item, user_id=user_id)
-
-
-@app.get("/items/", response_model=list[schemas.Item])
-def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    items = crud.get_items(db, skip=skip, limit=limit)
-    return items
-'''

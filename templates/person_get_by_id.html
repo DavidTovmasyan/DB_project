@@ -6,9 +6,16 @@
 </head>
 <body>
     <h1>Person Details</h1>
+    <p>ID: {{ person.id }}</p>
     <p>Name: {{ person.name }}</p>
     <p>Surname: {{ person.surname }}</p>
-    <!-- Add other details as needed -->
+    <p>Second name: {{ person.second_name }}</p>
+    <p>Passport: {{ person.passport }}</p>
+    <p>Foreign passport: {{ person.foreign_passport }}</p>
+    <p>Country: {{ person.country }}</p>
+    <p>Contacts: {{ person.contacts }}</p>
+
+
 
     <h2>Update Person</h2>
     <form method="post" action="/persons/update/{{ person.id }}">
