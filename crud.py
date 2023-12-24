@@ -20,8 +20,33 @@ def create_vacation_place(db: Session, vacation_place: schemas.VacationPlaceCrea
 def get_vacation_place(db: Session, vacation_place_id: int):
     return db.query(models.VacationPlace).filter(models.VacationPlace.id == vacation_place_id).first()
 
-def get_vacation_places(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.VacationPlace).offset(skip).limit(limit).all()
+def get_vacation_places(db: Session, page_num: int = 1, page_size: int = 10):
+    start = (page_num - 1) * page_size
+    end = start + page_size
+    data = db.query(models.VacationPlace).all()
+    data_length = len(data)
+    response = {
+        "data": data[start:end],
+        "total": data_length,
+        "count": page_size,
+        "pagination": {}
+    }
+    if end > data_length:
+        response["pagination"]["next"] = None
+
+        if page_num > 1:
+            response["pagination"]["previous"] = f"/orders/get?page_num={page_num - 1}&page_size={page_size}"
+        else:
+            response["pagination"]["previous"] = None
+    else:
+        if page_num > 1:
+            response["pagination"]["previous"] = f"/orders/get?page_num={page_num - 1}&page_size={page_size}"
+        else:
+            response["pagination"]["previous"] = None
+
+        response["pagination"]["next"] = f"/orders/get?page_num={page_num + 1}&page_size={page_size}"
+
+    return response
 
 def update_vacation_place(db: Session, vacation_place_id: int, vacation_place: schemas.VacationPlaceCreate):
     db_vacation_place = db.query(models.VacationPlace).filter(models.VacationPlace.id == vacation_place_id).first()
@@ -49,13 +74,33 @@ def get_person(db: Session, person_id: int):
 '''def get_persons(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Person).offset(skip).limit(limit).all()'''
 
-def get_persons(db: Session, skip: int = 0, limit: int = 100, sort_by: str = None):
-    if sort_by == models.Person.id:
-        return db.query(models.Person).order_by(sort_by).offset(skip).limit(limit).all()
-    elif sort_by == models.Person.name:
-        return db.query(models.Person).order_by(sort_by).offset(skip).limit(limit).all()
+def get_persons(db: Session, page_num: int = 1, page_size: int = 10, sort_by: str = None):
+    start = (page_num - 1) * page_size
+    end = start + page_size
+    data = db.query(models.Person).order_by(sort_by).all()
+    data_length = len(data)
+    response = {
+        "data": data[start:end],
+        "total": data_length,
+        "count": page_size,
+        "pagination": {}
+    }
+    if end > data_length:
+        response["pagination"]["next"] = None
+
+        if page_num > 1:
+            response["pagination"]["previous"] = f"/orders/get?page_num={page_num - 1}&page_size={page_size}"
+        else:
+            response["pagination"]["previous"] = None
     else:
-        print("Wrong argument!")
+        if page_num > 1:
+            response["pagination"]["previous"] = f"/orders/get?page_num={page_num - 1}&page_size={page_size}"
+        else:
+            response["pagination"]["previous"] = None
+
+        response["pagination"]["next"] = f"/orders/get?page_num={page_num + 1}&page_size={page_size}"
+
+    return response
 
 def update_person(db: Session, person_id: int, person: schemas.PersonCreate):
     db_person = db.query(models.Person).filter(models.Person.id == person_id).first()
@@ -80,8 +125,33 @@ def create_tour(db: Session, tour: schemas.TourCreate):
 def get_tour(db: Session, tour_id: int):
     return db.query(models.Tour).filter(models.Tour.id == tour_id).first()
 
-def get_tours(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Tour).offset(skip).limit(limit).all()
+def get_tours(db: Session, page_num: int = 1, page_size: int = 10):
+    start = (page_num - 1) * page_size
+    end = start + page_size
+    data = db.query(models.Tour).all()
+    data_length = len(data)
+    response = {
+        "data": data[start:end],
+        "total": data_length,
+        "count": page_size,
+        "pagination": {}
+    }
+    if end > data_length:
+        response["pagination"]["next"] = None
+
+        if page_num > 1:
+            response["pagination"]["previous"] = f"/orders/get?page_num={page_num - 1}&page_size={page_size}"
+        else:
+            response["pagination"]["previous"] = None
+    else:
+        if page_num > 1:
+            response["pagination"]["previous"] = f"/orders/get?page_num={page_num - 1}&page_size={page_size}"
+        else:
+            response["pagination"]["previous"] = None
+
+        response["pagination"]["next"] = f"/orders/get?page_num={page_num + 1}&page_size={page_size}"
+
+    return response
 
 def update_tour(db: Session, tour_id: int, tour: schemas.TourCreate):
     db_tour = db.query(models.Tour).filter(models.Tour.id == tour_id).first()
@@ -97,8 +167,33 @@ def delete_tour(db: Session, tour_id: int):
 
 # For our queries
     
-def get_persons_filtered(db: Session, skip: int = 0, limit: int = 100, **filters):
-    return db.query(models.Person).filter_by(**filters).offset(skip).limit(limit).all()
+def get_persons_filtered(db: Session, page_num = 1, page_size = 10, **filters):
+    start = (page_num - 1) * page_size
+    end = start + page_size
+    data = db.query(models.Person).filter_by(**filters).all()
+    data_length = len(data)
+    response = {
+        "data": data[start:end],
+        "total": data_length,
+        "count": page_size,
+        "pagination": {}
+    }
+    if end > data_length:
+        response["pagination"]["next"] = None
+
+        if page_num > 1:
+            response["pagination"]["previous"] = f"/orders/get?page_num={page_num - 1}&page_size={page_size}"
+        else:
+            response["pagination"]["previous"] = None
+    else:
+        if page_num > 1:
+            response["pagination"]["previous"] = f"/orders/get?page_num={page_num - 1}&page_size={page_size}"
+        else:
+            response["pagination"]["previous"] = None
+
+        response["pagination"]["next"] = f"/orders/get?page_num={page_num + 1}&page_size={page_size}"
+
+    return response
 
 def get_tours_with_places(db: Session):
     return db.query(models.Tour).join(models.VacationPlace).all()

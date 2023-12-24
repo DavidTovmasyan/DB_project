@@ -55,9 +55,9 @@ def create_vacation_place(vacation_place: schemas.VacationPlaceCreate, db: Sessi
     return crud.create_vacation_place(db=db, vacation_place=vacation_place)
 
 @app.get("/vacation_places/", response_model=list[schemas.VacationPlace], response_class=HTMLResponse)
-def read_vacation_places(request: Request, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    vacation_places = crud.get_vacation_places(db, skip=skip, limit=limit)
-    return templates.TemplateResponse("vacation_place_get.html", {"request": request, "vacation_places": vacation_places})
+def read_vacation_places(request: Request, page_num: int = 1, page_size: int = 10, db: Session = Depends(get_db)):
+    vacation_places_response = crud.get_vacation_places(db, page_num=page_num, page_size=page_size)
+    return templates.TemplateResponse("vacation_place_get.html", {"request": request, "vacation_places_response": vacation_places_response})
 
 @app.get("/vacation_places/{vacation_place_id}", response_model=schemas.VacationPlace, response_class=HTMLResponse)
 def read_vacation_place(request: Request,vacation_place_id: int, db: Session = Depends(get_db)):
@@ -81,9 +81,9 @@ def create_person(person: schemas.PersonCreate, db: Session = Depends(get_db)):
     return crud.create_person(db=db, person=person)
 
 @app.get("/persons/", response_model=list[schemas.Person], response_class=HTMLResponse)
-def read_persons(request: Request, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    persons = crud.get_persons(db, skip=skip, limit=limit, sort_by=models.Person.id)
-    return templates.TemplateResponse("person_get.html", {"request": request, "persons": persons})
+def read_persons(request: Request, page_num: int = 1, page_size: int = 10, db: Session = Depends(get_db)):
+    persons_response = crud.get_persons(db, page_num=page_num, page_size=page_size, sort_by=models.Person.id)
+    return templates.TemplateResponse("person_get.html", {"request": request, "persons_response": persons_response})
 
 
 @app.get("/persons/{person_id}", response_model=schemas.Person, response_class=HTMLResponse)
@@ -108,9 +108,9 @@ def create_tour(tour: schemas.TourCreate, db: Session = Depends(get_db)):
     return crud.create_tour(db=db, tour=tour)
 
 @app.get("/tours/", response_model=list[schemas.Tour], response_class=HTMLResponse)
-def read_tours(request: Request, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    tours = crud.get_tours(db, skip=skip, limit=limit)
-    return templates.TemplateResponse("tour_get.html", {"request": request, "tours": tours})
+def read_tours(request: Request, page_num: int = 1, page_size: int = 10, db: Session = Depends(get_db)):
+    tours_response = crud.get_tours(db, page_num=page_num, page_size=page_size)
+    return templates.TemplateResponse("tour_get.html", {"request": request, "tours_response": tours_response})
 
 @app.get("/tours/{tour_id}", response_model=schemas.Tour, response_class=HTMLResponse)
 def read_tour(request: Request, tour_id: int, db: Session = Depends(get_db)):
@@ -131,15 +131,15 @@ def delete_tour(tour_id: int, db: Session = Depends(get_db)):
 
 # 1) Assuming you want to filter persons by name and country (SELECT ... WHERE)
 @app.get("/persons/filter/{person_name}&&{person_country}", response_model=list[schemas.PersonBase], response_class=HTMLResponse)
-def filter_persons(request: Request, name: str = None, country: str = None, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def filter_persons(request: Request, name: str = None, country: str = None, page_num: int = 1, page_size: int = 10, db: Session = Depends(get_db)):
     filters = {}
     if name:
         filters["name"] = name
     if country:
         filters["country"] = country
-
-    persons = crud.get_persons_filtered(db, skip=skip, limit=limit, **filters)
-    return templates.TemplateResponse("person_get.html", {"request": request, "persons": persons})
+    
+    persons_response = crud.get_persons_filtered(db, page_num=page_num, page_size=page_size, **filters)
+    return templates.TemplateResponse("person_get.html", {"request": request, "persons_response": persons_response, "person_name": name, "person_country": country})
 
 # 2) Assuming you want to get tours with corresponding vacation places (JOIN)
 @app.get("/tours-with-places", response_model=list[schemas.Tour], response_class=HTMLResponse)
@@ -160,6 +160,6 @@ def get_tours_count_per_place(request: Request, db: Session = Depends(get_db)):
 
 # 5) Assuming you want to get persons with optional sorting by name
 @app.get("/persons_sort_by_name/", response_model=list[schemas.Person], response_class=HTMLResponse)
-def read_persons(request: Request, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    persons = crud.get_persons(db, skip=skip, limit=limit, sort_by=models.Person.name)
-    return templates.TemplateResponse("person_get.html", {"request": request, "persons": persons})
+def read_persons(request: Request, page_num: int = 1, page_size: int = 10, db: Session = Depends(get_db)):
+    persons_response = crud.get_persons(db, page_num=page_num, page_size=page_size, sort_by=models.Person.name)
+    return templates.TemplateResponse("person_get.html", {"request": request, "persons_response": persons_response})

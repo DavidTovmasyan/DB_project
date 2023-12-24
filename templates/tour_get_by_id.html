@@ -14,23 +14,5 @@
     <p>Person ID: {{ tour.person_id }}</p>
     <p>Vacation place ID: {{ tour.vacation_place_id }}</p>
 
-    <!-- Add other details as needed -->
-
-    <h2>Update Tour</h2>
-    <form method="post" action="/tours/update/{{ tour.id }}">
-        <label for="price">Price:</label>
-        <input type="text" id="price" name="price" value="{{ tour.price }}" required>
-        <br>
-        <label for="start_date">Start Date:</label>
-        <input type="text" id="start_date" name="start_date" value="{{ tour.start_date }}" required>
-        <br>
-        <!-- Add other fields as needed -->
-        <input type="submit" value="Update">
-    </form>
-
-    <h2>Delete Tour</h2>
-    <form method="post" action="/tours/delete/{{ tour.id }}">
-        <input type="submit" value="Delete">
-    </form>
 </body>
 </html>

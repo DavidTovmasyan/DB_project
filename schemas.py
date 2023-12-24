@@ -10,7 +10,8 @@ class VacationPlaceBase(BaseModel):
     sea: str
 
 class VacationPlaceCreate(VacationPlaceBase):
-    pass
+    id: int
+    # Added id as I encountered a repeating id problem
 
 class VacationPlace(VacationPlaceBase):
     id: int
@@ -32,7 +33,8 @@ class PersonBase(BaseModel):
     second_name: Optional[str] = None
 
 class PersonCreate(PersonBase):
-    pass
+    id: int
+    # Added id as i encountered a repeating id problem
 
 class Person(PersonBase):
     id: int
@@ -50,6 +52,8 @@ class TourBase(BaseModel):
 class TourCreate(TourBase):
     vacation_place_id: int
     person_id: int
+    id: int
+    # Added id as I encountered a repeating id problem
 
 class Tour(TourBase):
     id: int

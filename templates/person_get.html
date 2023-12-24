@@ -7,26 +7,13 @@
 <body>
     <h1>Persons</h1>
     <ul>
-        {% for person in persons %}
+        {% for person in persons_response["data"] %}
             <li>
                 <a href="/persons/{{ person.id }}">{{ person.name }} {{ person.surname }}</a>
-                <form method="post" action="/persons/delete/{{ person.id }}">
-                    <input type="submit" value="Delete">
-                </form>
+                <br>
             </li>
         {% endfor %}
     </ul>
 
-    <h2>Create New Person</h2>
-    <form method="post" action="/persons/create">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
-        <br>
-        <label for="surname">Surname:</label>
-        <input type="text" id="surname" name="surname" required>
-        <br>
-        <!-- Add other fields as needed -->
-        <input type="submit" value="Create">
-    </form>
 </body>
 </html>
